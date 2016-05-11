@@ -2,36 +2,6 @@
 	$token = $_POST['token'];
 	$password = $_POST['password'];
 
-	// function user_exist($conn, $email)
-	// {
-	// 	$user_exist = $conn->prepare("SELECT email FROM users WHERE email=?;");
-	// 	$user_exist->bindParam(1, $email);
-	// 	$user_exist->execute();
-	// 	$result = $user_exist->fetchAll();
-	// 	if (count($result) >= 1)
-	// 		return (1);
-	// 	return (0);
-	// }
-
-	// function valid_logs($email, $password)
-	// {
-	// 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-	// 		return "Warning: Invalid email format"; 
-	// 	}
-	// 	if (strlen($password) < 8) {
-	// 		return "Warning: Password too short!";
-	// 	}
-
-	// 	if (!preg_match("#[0-9]+#", $password)) {
-	// 		return "Warning: Password must include at least one number!";
-	// 	}
-
-	// 	if (!preg_match("#[a-zA-Z]+#", $password)) {
-	// 		return "Warning: Password must include at least one letter!";
-	// 	}
-	// 	return null;
-	// }
-
 	function delete_token($conn, $email)
 	{
 		$delete_token = $conn->prepare('DELETE FROM tokens WHERE email=?');
