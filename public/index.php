@@ -88,7 +88,7 @@
 		<div class="box">
 			<h1>Identification</h1>
 			<input id="email" type="email" name="email" value="email@email.com" onFocus="field_focus(this, 'email@email.com');" onblur="field_blur(this, 'email@email.com');" class="formular" />
-			<input id="password" type="password" name="password" value="password" onFocus="field_focus(this, 'password');" onblur="field_blur(this, 'email');" class="formular" />
+			<input id="password" type="password" name="password" value="password" onFocus="field_focus(this, 'password');" onblur="field_blur(this, 'password');" class="formular" />
 			<input hidden="true" name="formType" id="formType" />
 			
 			<a onclick="handleClick('login');" ><div class="btn">Sign In</div></a>

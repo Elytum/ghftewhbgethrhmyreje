@@ -90,15 +90,22 @@
 
 	function connect_user($conn, $email, $password)
 	{
-		$connect_user = $conn->prepare('SELECT email FROM users WHERE email=? AND password=?;');
+		// $connect_user = $conn->prepare('SELECT email FROM users WHERE email=? AND password=?;');
+		$connect_user = $conn->prepare('SELECT password FROM users WHERE email=?');
 		$connect_user->bindParam(1, $email);
-		$connect_user->bindParam(2, hash('whirlpool',$password));
+		// $connect_user->bindParam(2, hash('whirlpool',$password));
 		$connect_user->execute();
 		$result = $connect_user->fetchAll();
-		// print_r($result);
+		// echo 'Error: ';
+		// echo $email;
 		if (count($result) != 1)
 		{
 			echo 'Error: Unknown user';
+			return (0);
+		}
+		if ($result[0]['password'] != hash('whirlpool',$password))
+		{
+			echo 'Error: Wrong password';
 			return (0);
 		}
 		$token = create_token($conn, $email);
