@@ -6,9 +6,6 @@
 	<br>
 
 	<div id="response" style="display:none" class="info">Info message</div>
-<!-- 	<div class="success">Successful operation message</div>
-	<div class="warning">Warning message</div>
-	<div class="error">Error message</div> -->
 
 	<script>
 		function field_focus(field, email) {

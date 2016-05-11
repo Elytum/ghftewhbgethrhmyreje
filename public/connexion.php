@@ -15,7 +15,6 @@
 			$check_token->bindParam(2, $token);
 			$check_token->execute();
 			$result = $check_token->fetchAll();
-			// print_r($result);
 			if (count($result) != 1)
 				return (0);
 			return (1);
@@ -24,7 +23,7 @@
 		{
 			echo "Connection failed on token: " . $e->getMessage();
 		}
-
+		return (0);
 	}
 
 	$ids = json_decode(hex2bin($_POST['ids']), true);
