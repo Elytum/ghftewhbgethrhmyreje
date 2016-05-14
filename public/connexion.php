@@ -26,12 +26,16 @@
 		return (0);
 	}
 
-	$ids = json_decode(hex2bin($_POST['ids']), true);
-	// print_r($ids);
-	if (check_token($ids['email'], hex2bin($ids['token'])) == 0)
+	try{
+		$ids = json_decode(hex2bin($_POST['ids']), true);
+		if (check_token($ids['email'], hex2bin($ids['token'])) == 0)
+			echo 'Not connected';
+		else
+			echo 'Connected';
+	}
+	catch(Exception $e) {
 		echo 'Not connected';
-	else
-		echo 'Connected';
+	}
 
 
 ?>

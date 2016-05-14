@@ -83,12 +83,12 @@
 						if (confirmation == '')
 							return ;
 						var url = "delete.php";
-						var data = 'token='+localStorage.getItem('ids')+'&password='+confirmation;//console.log('delete');
+						var data = 'ids='+localStorage.getItem('ids')+'&password='+confirmation;//console.log('delete');
 					}
 					else if (type == 'update')
 					{
 						var url = "update.php";
-						var data = 'token='+localStorage.getItem('ids')+'&newemail='+document.getElementById('newemail').value+'&newpassword='+document.getElementById('newpassword').value+'&password='+document.getElementById('password').value;//console.log('delete');
+						var data = 'ids='+localStorage.getItem('ids')+'&newemail='+document.getElementById('newemail').value+'&newpassword='+document.getElementById('newpassword').value+'&password='+document.getElementById('password').value;//console.log('delete');
 					}
 					else
 						return ;
@@ -121,6 +121,11 @@
 									document.getElementById("response").style.display = 'block';
 									document.getElementById("response").innerHTML = xhr.responseText;
 									document.getElementById("response").className = 'info';
+								}
+								else if (xhr.responseText.startsWith("OK: "))
+								{
+									console.log(xhr.responseText.substring(4));
+									localStorage.setItem('ids', xhr.responseText.substring(4));
 								}
 							}
 						}

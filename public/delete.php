@@ -1,7 +1,4 @@
 <?php
-	$token = $_POST['token'];
-	$password = $_POST['password'];
-
 	function delete_token($conn, $email)
 	{
 		$delete_token = $conn->prepare('DELETE FROM tokens WHERE email=?');
@@ -30,6 +27,7 @@
 		$delete_user->execute();
 		echo 'Exit';
 		delete_token($conn, $email);
+		return (1);
 	}
 
 	function check_token($conn, $email, $token)
@@ -52,17 +50,26 @@
 
 	try {
 		// echo 'Info: ';
+
+		$ids = json_decode(hex2bin($_POST['ids']), true);
+		$password = $_POST['password'];
+		$email = $ids['email'];
+		$token = hex2bin($ids['token']);
+
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		// echo "Connected successfully";
-		$ids = json_decode(hex2bin($token), true);
+		// $ids = json_decode(hex2bin($token), true);
 		// print_r($ids);
-		$email = $ids['email'];
-		$token = hex2bin($ids['token']);
-		// echo $email;
-		// echo $token;
-		// $email = $data['email'];
-		// $token = $data['token'];
+		// print_r($ids['token']);
+		// $email = $ids['email'];
+		// $token = hex2bin($ids['token']);
+		// print_r('Ids:');
+		// print_r($ids);
+		// print_r('Email:');
+		// print_r($email);
+		// print_r('Token:');
+		// print_r($token);
 		if (check_token($conn, $email, $token) == 0)
 			echo 'Error: Your token seems broken';
 		else

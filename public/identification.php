@@ -40,7 +40,7 @@
 		$has_token->execute();
 		$result = $has_token->fetchAll();
 		if (count($result) != 0)
-			return ($result['id']);
+			return ($result[0]['id']);
 		return (-1);
 	}
 
@@ -48,9 +48,9 @@
 	{
 		date_default_timezone_set();
 		$token = openssl_random_pseudo_bytes(255);
-		if ($id = has_token($conn, $email) != -1)
+		$id = has_token($conn, $email);
+		if ($id != -1)
 		{
-			// echo 'Already have token';
 			$create_token = $conn->prepare('UPDATE tokens SET token=?, last_request=? WHERE id=?');
 			$create_token->bindParam(1, $token);
 			$create_token->bindParam(2, date_timestamp_get(date_create()));
@@ -59,7 +59,6 @@
 		}
 		else
 		{
-			// echo 'No token actually';
 			$create_token = $conn->prepare('INSERT INTO tokens (email,token,last_request) VALUES (?, ?, ?);');
 			$create_token->bindParam(1, $email);
 			$create_token->bindParam(2, $token);
