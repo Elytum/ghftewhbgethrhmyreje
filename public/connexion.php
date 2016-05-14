@@ -26,7 +26,7 @@
 		return (0);
 	}
 
-	try{
+	try {
 		$ids = json_decode(hex2bin($_POST['ids']), true);
 		if (check_token($ids['email'], hex2bin($ids['token'])) == 0)
 			echo 'Not connected';
