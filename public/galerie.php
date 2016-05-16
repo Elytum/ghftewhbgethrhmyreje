@@ -117,14 +117,14 @@
 	{
 		echo '<div class="galerie">';
 		echo '<div class="content" id="list">';
-		$list_images = $conn->prepare("SELECT b64, author, commentary FROM images;");
+		$list_images = $conn->prepare("SELECT id, b64, author, commentary FROM images;");
 		$list_images->execute();
 		$result = $list_images->fetchAll();
 		$counter = 0;
 		foreach ($result as $value) {
 			if ($value['author'] == null)
 				continue ;
-			echo	'<span class="element">
+			echo	'<span class="element" onclick="console.log(\''.$value['id'].'\')">
 						<div class="left">
 							<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$value['b64'].'">
 						</div>
