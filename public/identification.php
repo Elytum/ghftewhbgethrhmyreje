@@ -5,6 +5,7 @@
 
 /*CREATE TABLE users (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, username VARCHAR(255), email VARCHAR(255), password VARCHAR(255), creation_date INT );*/
 /*CREATE TABLE tokens (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, email VARCHAR(255), token VARCHAR(255), last_request INT );*/
+/*CREATE TABLE images (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, b64 TEXT CHARACTER SET ascii, author VARCHAR(255), commentary VARCHAR(255) );*/
 
 	function user_exist($conn, $email)
 	{
@@ -24,7 +25,7 @@
 			echo "Error: User already exist";
 			return (0);
 		}
-		date_default_timezone_set();
+		date_default_timezone_set('Europe/Paris');
 		$create_user = $conn->prepare('INSERT INTO users (username,email,password,creation_date) VALUES ("", ?, ?, ?);');
 		$create_user->bindParam(1, $email);
 		$create_user->bindParam(2, hash('whirlpool',$password));
@@ -46,7 +47,7 @@
 
 	function create_token($conn, $email)
 	{
-		date_default_timezone_set();
+		date_default_timezone_set('Europe/Paris');
 		$token = openssl_random_pseudo_bytes(255);
 		$id = has_token($conn, $email);
 		if ($id != -1)

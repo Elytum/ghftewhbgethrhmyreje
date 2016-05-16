@@ -36,6 +36,4 @@
 	catch(Exception $e) {
 		echo 'Not connected';
 	}
-
-
 ?>

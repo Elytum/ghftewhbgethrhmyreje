@@ -30,7 +30,7 @@
 	<div id="container">
 	    <video autoplay="true" id="videoElement">
 	    </video>
-	   	<img width="500" height="375" src="cat.gif" id="cornerimage"/>
+	   	<img width="500" height="375" src="" id="cornerimage"/>
 	   	<!-- <img width="500" height="375" src="moving_cat.gif" id="cornerimage"/> -->
 	</div>
 
@@ -106,12 +106,17 @@
 			var base64 = drawCanvas.toDataURL();
 
 			var xhr = getXMLHttpRequest();
+			xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				console.log(xhr.responseText);
+			}
+		};
 			xhr.open("POST", "takePicture.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhr.send("img="+encodeURIComponent(base64));
+			xhr.send('ids='+localStorage.getItem('ids')+'&img='+encodeURIComponent(base64)+'&addon='+document.getElementById("cornerimage").src.replace(/^.*[\\\/]/, ''));
 		}
 
-		function draw(video, drawCanvas){
+		function draw(video, drawCanvas) {
 
 			// get the canvas context for drawing
 			var context = drawCanvas.getContext('2d');
@@ -119,15 +124,62 @@
 			// draw the video contents into the canvas x, y, width, height
 			context.drawImage( video, 0, 0, drawCanvas.width, drawCanvas.height);
 
-			// draw the image contents into the canvas x, y, width, height
-			// context.drawImage( document.getElementById('cornerimage'), 0, 0, drawCanvas.width, drawCanvas.height);
-
 			// get the image data from the canvas object
-			var dataURL = drawCanvas.toDataURL();
+			var dataURL = drawCanvas.toDataURL("image/jpeg");
 
 		}
 
-	</script>
+		function changeAddon(name) {
+			console.log(name);
+			document.getElementById("cornerimage").src=name;
+		}
 
+	</script>
+	<style type="text/css">
+		#images {
+			padding: 5px;
+			overflow: auto;
+			position: relative;
+			width:900px;
+			margin:20px auto;
+			white-space: nowrap;
+		}
+		#commentaire {
+			position: relative;
+			width:910px;
+			color:white;
+			margin:auto;
+		}
+
+		.image {
+			display: inline-block;
+			width: 300px;
+			height: 200px;
+			border: 1px solid black;
+			text-align: center;
+			line-height: 400px;
+		}
+	</style>
+</head>
+<body>
+	<?php
+		$dir    = './pics';
+		$pics = scandir($dir);
+		$first = false;
+
+		echo '<div id="images">';
+		foreach ($pics as $value) {
+			if ($value[0] != '.')
+			{
+				$img = $dir.'/'.$value;
+				if ($first === false) {
+					$first = true;
+					echo '<script>changeAddon(\''.$img.'\');</script>';
+				}
+				echo '<div onclick="changeAddon(\''.$img.'\')" style="background-image: url(\''.$img.'\');background-size: 100% 100%;" class="image"></div>';
+			}
+		}
+		echo '</div>';
+	?>
 	</body>
 </html>

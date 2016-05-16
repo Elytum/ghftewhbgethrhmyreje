@@ -69,13 +69,13 @@
 		background-color: #666;
 	}
 
-	.addon	{
+	/*.addon	{
 		width: 250px;
 		height: 250px;
 		position: absolute;
 		top: 0;
 		left: 0;
-	}
+	}*/
 
 	.author	{
 		/*background: red;*/
@@ -112,102 +112,101 @@
 
 	</style>
 
-<!-- /usr/local/mysql/bin/mysqld --user=_mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --plugin-dir=/usr/local/mysql/lib/plugin --log-error=/usr/local/mysql/data/mysqld.local.err --pid-file=/usr/local/mysql/data/mysqld.local.pid
- -->
-	<div class="galerie">
-		<div class="content" id="list">
-			<span class="element">
-				<div class="left">
-					<img class="picture" src="lol.jpg">
-					<img class="addon" src="moving_cat.gif">
-				</div>
-				<div class="right">
-					<div class="author">
-						Arthur Chazal
-					</div>
-					<div class="comment">
-						012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234
-					</div>
-					<div class="stats">
-						<div class="review">
-							<br>2 comments 20 likes
+<?php
+	function list_images($conn)
+	{
+		echo '<div class="galerie">';
+		echo '<div class="content" id="list">';
+		$list_images = $conn->prepare("SELECT b64, author, commentary FROM images;");
+		$list_images->execute();
+		$result = $list_images->fetchAll();
+		$counter = 0;
+		foreach ($result as $value) {
+			if ($value['author'] == null)
+				continue ;
+			echo	'<span class="element">
+						<div class="left">
+							<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$value['b64'].'">
 						</div>
-						<img class="likebutton" src="like.png">
-					</div>
-				</div>
-			</span>
-
-			<span class="element">
-				<div class="left">
-					<img class="picture" src="lol.jpg">
-					<img class="addon" src="moving_cat.gif">
-				</div>
-
-				<div class="right">
-					<div class="author">
-						Arthur Chazal
-					</div>
-					<div class="comment">
-						Hello
-					</div>
-					<div class="stats">
-						<div class="review">
-							<br>3 comments 20 likes
+						<div class="right">
+							<div class="author">
+								'.$value['author'].'
+							</div>
+							<div class="comment">
+								'.$value['commentary'].'
+							</div>
+							<div class="stats">
+								<div class="review">
+									<br>X comments Y likes
+								</div>
+								<img class="likebutton" src="like.png">
+							</div>
 						</div>
-						<img class="likebutton" src="dislike.png">
-					</div>
-				</div>
-			</span>
-		</div>
-	</div>
+					</span>';
+		}
+		echo '</div>';
+		echo '</div>';
+		$counter = $counter + 1;
+		if ($counter == 10)
+			return ;
+	}
+
+	$servername = "127.0.0.1";
+	$username = "root";
+	$pass = "";
+	$port = "8081";
+	$dbname = "camagru";
+
+	try {
+		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
+		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		list_images($conn);
+		// echo "Connected successfully";
+		$create_token = $conn->prepare('INSERT INTO images (b64, author, commentary) VALUES (?, ?, "");');
+		$create_token->bindParam(1, $contents);
+		$create_token->bindParam(2, $email);
+		$create_token->execute();
+	}
+	catch(PDOException $e)
+	{
+		echo "Error: Unknown";//Connection failed on subscribe: " . $e->getMessage();
+	}
+?>
 
 <script>
-		function addPicture(picture, addon, author, comment, review) {
-			var ul = document.getElementById("list");
-			var li = document.createElement("li");
-			li.setAttribute("class", "galerie");
-			var div = document.createElement("div");
-			div.setAttribute("class", "container");
-			var pic = document.createElement("img");
-			pic.setAttribute("width", "200px");
-			pic.setAttribute("height", "200px");
-			pic.setAttribute("class", "picture");
-			pic.setAttribute("src", picture);
-			var add = document.createElement("img");
-			add.setAttribute("width", "200px");
-			add.setAttribute("height", "200px");
-			add.setAttribute("class", "addon");
-			add.setAttribute("src", addon);
-			var aut = document.createElement("h3");
-			aut.innerHTML = author;
-			var com = document.createElement("p");
-			com.innerHTML = comment;
-			com.setAttribute("class", "text-field");
-			rev = document.createElement("div");
-			rev.setAttribute("class", "review");
-			rev.innerHTML = review;
-			div.appendChild(pic);
-			div.appendChild(add);
-			div.appendChild(aut);
-			div.appendChild(com);
-			div.appendChild(rev);
-			li.appendChild(div);
-			ul.appendChild(li);
-		}
-
-		// addPicture("lol.jpg", "moving_cat.gif", "Arthur Chazal", "012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "moving_cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
-		// addPicture("lol.jpg", "cat.gif", "Arthur Chazal", "Just some test", "42 comments 20 likes");
+		// function addPicture(picture, addon, author, comment, review) {
+		// 	var ul = document.getElementById("list");
+		// 	var li = document.createElement("li");
+		// 	li.setAttribute("class", "galerie");
+		// 	var div = document.createElement("div");
+		// 	div.setAttribute("class", "container");
+		// 	var pic = document.createElement("img");
+		// 	pic.setAttribute("width", "200px");
+		// 	pic.setAttribute("height", "200px");
+		// 	pic.setAttribute("class", "picture");
+		// 	pic.setAttribute("src", picture);
+		// 	var add = document.createElement("img");
+		// 	add.setAttribute("width", "200px");
+		// 	add.setAttribute("height", "200px");
+		// 	add.setAttribute("class", "addon");
+		// 	add.setAttribute("src", addon);
+		// 	var aut = document.createElement("h3");
+		// 	aut.innerHTML = author;
+		// 	var com = document.createElement("p");
+		// 	com.innerHTML = comment;
+		// 	com.setAttribute("class", "text-field");
+		// 	rev = document.createElement("div");
+		// 	rev.setAttribute("class", "review");
+		// 	rev.innerHTML = review;
+		// 	div.appendChild(pic);
+		// 	div.appendChild(add);
+		// 	div.appendChild(aut);
+		// 	div.appendChild(com);
+		// 	div.appendChild(rev);
+		// 	li.appendChild(div);
+		// 	ul.appendChild(li);
+		// }
 </script>
 
 	<!-- <div class="fb-page" 
