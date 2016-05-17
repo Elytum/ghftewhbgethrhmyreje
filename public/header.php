@@ -1,3 +1,14 @@
+<meta charset="UTF-8">
+<title>Camagru</title>
+<link rel="stylesheet" type="text/css" href="header.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+<ul id="header" class="header">
+  <li class="header"><a id="account.php" href="account.php">Mon compte</a></li>
+  <li class="header"><a id="montage.php" href="montage.php">Montage</a></li>
+  <li class="header"><a id="galerie.php" href="galerie.php">Galerie</a></li>
+  <li class="header"><a onclick="disconnect()" href="index.php">Deconnection</a></li>
+</ul class="header">
+
 <script>
 	function disconnect() {
 		localStorage.removeItem('ids');
@@ -48,7 +59,6 @@
             if (xhr.readyState == 4 && xhr.status == 200) {
             	if (xhr.responseText == 'Not connected')
             		localStorage.removeItem('ids');
-                console.log(xhr.responseText);
             	if (getPage() != 'index.php')
             	{
             		if (xhr.responseText == 'Not connected')
@@ -64,15 +74,5 @@
 	}
 
 	checkConnection();
-	highlight();
+	window.onload = highlight();
 </script>
-
-<title>Camagru</title>
-<link rel="stylesheet" type="text/css" href="header.css">
-<link rel="stylesheet" type="text/css" href="style.css">
-<ul id="header" class="header">
-  <li class="header"><a id="account.php" href="account.php">Mon compte</a></li>
-  <li class="header"><a id="montage.php" href="montage.php">Montage</a></li>
-  <li class="header"><a id="galerie.php" href="galerie.php">Galerie</a></li>
-  <li class="header"><a onclick="disconnect()" href="index.php">Deconnection</a></li>
-</ul class="header">

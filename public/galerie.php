@@ -7,7 +7,6 @@
 
 		function clicked(id)
 		{
-			console.log(id);
 			window.location = "picture.php?id="+id.toString();
 		}
 
@@ -122,9 +121,28 @@
 		$result = $list_images->fetchAll();
 		$counter = 0;
 		foreach ($result as $value) {
+			$id = $value['id'];
+			$likes_count = $conn->prepare("SELECT COUNT(*) FROM likes WHERE image=?;");
+			$likes_count->bindParam(1, $id);
+			$likes_count->execute();
+			try {
+				$likes_count = $likes_count->fetchAll()[0][0];
+			}
+			catch (Exception $e) {
+				$likes_count = 0;
+			}
+			$comments_count = $conn->prepare("SELECT COUNT(*) FROM comments WHERE image=?;");
+			$comments_count->bindParam(1, $id);
+			$comments_count->execute();
+			try {
+				$comments_count = $comments_count->fetchAll()[0][0];
+			}
+			catch (Exception $e) {
+				$comments_count = 0;
+			}
 			if ($value['author'] == null)
 				continue ;
-			echo	'<span class="element" onclick="clicked(\''.$value['id'].'\')">
+			echo	'<span class="element" onclick="clicked(\''.$id.'\')">
 						<div class="left">
 							<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$value['b64'].'">
 						</div>
@@ -137,7 +155,7 @@
 							</div>
 							<div class="stats">
 								<div class="review">
-									<br>X comments Y likes
+									<br>'.strval($comments_count).' comment(s), '.strval($likes_count).' like(s)
 								</div>
 								<img class="likebutton" src="imgs/like.png">
 							</div>

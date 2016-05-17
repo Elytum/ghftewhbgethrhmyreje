@@ -83,12 +83,12 @@
 						if (confirmation == '')
 							return ;
 						var url = "delete.php";
-						var data = 'ids='+localStorage.getItem('ids')+'&password='+confirmation;//console.log('delete');
+						var data = 'ids='+localStorage.getItem('ids')+'&password='+confirmation;
 					}
 					else if (type == 'update')
 					{
 						var url = "update.php";
-						var data = 'ids='+localStorage.getItem('ids')+'&newemail='+document.getElementById('newemail').value+'&newpassword='+document.getElementById('newpassword').value+'&password='+document.getElementById('password').value;//console.log('delete');
+						var data = 'ids='+localStorage.getItem('ids')+'&newemail='+document.getElementById('newemail').value+'&newpassword='+document.getElementById('newpassword').value+'&password='+document.getElementById('password').value;
 					}
 					else
 						return ;
@@ -98,7 +98,6 @@
 						if (xhr.readyState == 4 && xhr.status == 200) {
 							if (xhr.responseText != '')
 							{
-								console.log(xhr.responseText);
 								if (xhr.responseText == ("Exit"))
 								{
 									localStorage.removeItem('ids');
@@ -130,12 +129,7 @@
 					xhr.open("POST", url, true);
 					xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 					xhr.send(data);
-					// console.log(url);
-					// console.log(data);
 				}
-				// console.log(localStorage.getItem('ids'));
-				// if (localStorage.getItem('ids') == null)
-				// 	document.getElementById("header").outerHTML='';
 			</script>		  
 		</div>
 	  

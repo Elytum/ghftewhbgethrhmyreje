@@ -76,7 +76,6 @@
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xhr.send("formType="+type+"&email="+email+"&password="+password);
 		}
-		console.log(localStorage.getItem('ids'));
 		if (localStorage.getItem('ids') == null)
 			document.getElementById("header").outerHTML='';
 	</script>

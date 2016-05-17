@@ -62,7 +62,6 @@
 					}
 				};       
 			navigator.getUserMedia(constraints, handleVideo, videoError);
-			console.log(video);
 		}
 
 		function handleVideo(stream) {
@@ -106,11 +105,6 @@
 			var base64 = drawCanvas.toDataURL();
 
 			var xhr = getXMLHttpRequest();
-			xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4 && xhr.status == 200) {
-				console.log(xhr.responseText);
-			}
-		};
 			xhr.open("POST", "takePicture.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xhr.send('ids='+localStorage.getItem('ids')+'&img='+encodeURIComponent(base64)+'&addon='+document.getElementById("cornerimage").src.replace(/^.*[\\\/]/, ''));
@@ -130,7 +124,6 @@
 		}
 
 		function changeAddon(name) {
-			console.log(name);
 			document.getElementById("cornerimage").src=name;
 		}
 
