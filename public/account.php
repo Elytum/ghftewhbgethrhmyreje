@@ -123,10 +123,7 @@
 									document.getElementById("response").className = 'info';
 								}
 								else if (xhr.responseText.startsWith("OK: "))
-								{
-									console.log(xhr.responseText.substring(4));
 									localStorage.setItem('ids', xhr.responseText.substring(4));
-								}
 							}
 						}
 					};

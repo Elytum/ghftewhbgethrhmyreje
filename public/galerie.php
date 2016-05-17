@@ -66,7 +66,7 @@
 	.picture	{
 		width: 250px;
 		height: 250px;
-		background-color: #666;
+		/*background-color: #666;*/
 	}
 
 	/*.addon	{
@@ -139,7 +139,7 @@
 								<div class="review">
 									<br>X comments Y likes
 								</div>
-								<img class="likebutton" src="like.png">
+								<img class="likebutton" src="imgs/like.png">
 							</div>
 						</div>
 					</span>';

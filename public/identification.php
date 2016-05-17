@@ -6,6 +6,8 @@
 /*CREATE TABLE users (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, username VARCHAR(255), email VARCHAR(255), password VARCHAR(255), creation_date INT );*/
 /*CREATE TABLE tokens (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, email VARCHAR(255), token VARCHAR(255), last_request INT );*/
 /*CREATE TABLE images (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, b64 TEXT CHARACTER SET ascii, author VARCHAR(255), commentary VARCHAR(255) );*/
+/*CREATE TABLE comments (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image INT, author VARCHAR(255), content VARCHAR(255) );*/
+/*CREATE TABLE likes (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image INT, author VARCHAR(255) );*/
 
 	function user_exist($conn, $email)
 	{

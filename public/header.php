@@ -46,6 +46,8 @@
 
 		xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
+            	if (xhr.responseText == 'Not connected')
+            		localStorage.removeItem('ids');
                 console.log(xhr.responseText);
             	if (getPage() != 'index.php')
             	{
