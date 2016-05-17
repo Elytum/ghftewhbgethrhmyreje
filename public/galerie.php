@@ -4,13 +4,13 @@
 	</head>
 	<body>
 	<script>
-		(function(d, s, id) {
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) return;
-		js = d.createElement(s); js.id = id;
-		js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";
-		fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));
+
+		function clicked(id)
+		{
+			console.log(id);
+			window.location = "picture.php?id="+id.toString();
+		}
+
 	</script>
 
 	<style>
@@ -124,7 +124,7 @@
 		foreach ($result as $value) {
 			if ($value['author'] == null)
 				continue ;
-			echo	'<span class="element" onclick="console.log(\''.$value['id'].'\')">
+			echo	'<span class="element" onclick="clicked(\''.$value['id'].'\')">
 						<div class="left">
 							<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$value['b64'].'">
 						</div>
@@ -174,48 +174,6 @@
 	}
 ?>
 
-<script>
-		// function addPicture(picture, addon, author, comment, review) {
-		// 	var ul = document.getElementById("list");
-		// 	var li = document.createElement("li");
-		// 	li.setAttribute("class", "galerie");
-		// 	var div = document.createElement("div");
-		// 	div.setAttribute("class", "container");
-		// 	var pic = document.createElement("img");
-		// 	pic.setAttribute("width", "200px");
-		// 	pic.setAttribute("height", "200px");
-		// 	pic.setAttribute("class", "picture");
-		// 	pic.setAttribute("src", picture);
-		// 	var add = document.createElement("img");
-		// 	add.setAttribute("width", "200px");
-		// 	add.setAttribute("height", "200px");
-		// 	add.setAttribute("class", "addon");
-		// 	add.setAttribute("src", addon);
-		// 	var aut = document.createElement("h3");
-		// 	aut.innerHTML = author;
-		// 	var com = document.createElement("p");
-		// 	com.innerHTML = comment;
-		// 	com.setAttribute("class", "text-field");
-		// 	rev = document.createElement("div");
-		// 	rev.setAttribute("class", "review");
-		// 	rev.innerHTML = review;
-		// 	div.appendChild(pic);
-		// 	div.appendChild(add);
-		// 	div.appendChild(aut);
-		// 	div.appendChild(com);
-		// 	div.appendChild(rev);
-		// 	li.appendChild(div);
-		// 	ul.appendChild(li);
-		// }
-</script>
-
-	<!-- <div class="fb-page" 
-		data-href="https://www.facebook.com/GameOfThrones"
-		data-small-header="true"
-		data-hide-cover="false"
-		data-show-facepile="true"
-		data-show-posts="false">
-	</div> -->
 	<br><br><br><br><br><br>
 	<?php include('footer.php');?>
 	</body>
