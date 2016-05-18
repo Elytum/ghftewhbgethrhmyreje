@@ -34,11 +34,11 @@
 
 		return $output_file; 
 	}
-
-// echo $_POST['img'];
 	$data = explode(',', $_POST['img']);
 	$data = base64_decode($data[1]);
 
+	if ($data == '')
+		return ;
 	$userImage = imagecreatefromstring($data);
 	$userImage = imagescale($userImage, 500, 375);
 
@@ -53,7 +53,6 @@
 			}
 		}
 	}
-
 	$addonImage = imagescale($addonImage, 500, 375);
 	imagecopy($userImage, $addonImage, 0, 0, 0, 0, 500, 375);
 

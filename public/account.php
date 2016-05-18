@@ -73,7 +73,7 @@
 				}
 
 				document.addEventListener("DOMContentLoaded", function(event) {
-					document.getElementById('newemail').value = JSON.parse(hex2bin(localStorage.getItem('ids')))['email'];
+					document.getElementById('newemail').value = JSON.parse(hex2bin(localStorage.getItem('ids')))['username'];
 				})
 
 				function handleClick(type) {
@@ -88,7 +88,7 @@
 					else if (type == 'update')
 					{
 						var url = "update.php";
-						var data = 'ids='+localStorage.getItem('ids')+'&newemail='+document.getElementById('newemail').value+'&newpassword='+document.getElementById('newpassword').value+'&password='+document.getElementById('password').value;
+						var data = 'ids='+localStorage.getItem('ids')+'&newusername='+document.getElementById('newusername').value+'&newpassword='+document.getElementById('newpassword').value+'&password='+document.getElementById('password').value;
 					}
 					else
 						return ;

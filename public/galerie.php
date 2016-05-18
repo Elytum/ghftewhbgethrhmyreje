@@ -121,46 +121,50 @@
 		$result = $list_images->fetchAll();
 		$counter = 0;
 		foreach ($result as $value) {
-			$id = $value['id'];
-			$likes_count = $conn->prepare("SELECT COUNT(*) FROM likes WHERE image=?;");
-			$likes_count->bindParam(1, $id);
-			$likes_count->execute();
 			try {
-				$likes_count = $likes_count->fetchAll()[0][0];
-			}
-			catch (Exception $e) {
-				$likes_count = 0;
-			}
-			$comments_count = $conn->prepare("SELECT COUNT(*) FROM comments WHERE image=?;");
-			$comments_count->bindParam(1, $id);
-			$comments_count->execute();
-			try {
-				$comments_count = $comments_count->fetchAll()[0][0];
-			}
-			catch (Exception $e) {
-				$comments_count = 0;
-			}
-			if ($value['author'] == null)
-				continue ;
-			echo	'<span class="element" onclick="clicked(\''.$id.'\')">
-						<div class="left">
-							<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$value['b64'].'">
-						</div>
-						<div class="right">
-							<div class="author">
-								'.$value['author'].'
+				$id = $value['id'];
+				$likes_count = $conn->prepare("SELECT COUNT(*) FROM likes WHERE image=?;");
+				$likes_count->bindParam(1, $id);
+				$likes_count->execute();
+				try {
+					$likes_count = $likes_count->fetchAll()[0][0];
+				}
+				catch (Exception $e) {
+					$likes_count = 0;
+				}
+				$comments_count = $conn->prepare("SELECT COUNT(*) FROM comments WHERE image=?;");
+				$comments_count->bindParam(1, $id);
+				$comments_count->execute();
+				try {
+					$comments_count = $comments_count->fetchAll()[0][0];
+				}
+				catch (Exception $e) {
+					$comments_count = 0;
+				}
+				if ($value['author'] == null)
+					continue ;
+				echo	'<span class="element" onclick="clicked(\''.$id.'\')">
+							<div class="left">
+								<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$value['b64'].'">
 							</div>
-							<div class="comment">
-								'.$value['commentary'].'
-							</div>
-							<div class="stats">
-								<div class="review">
-									<br>'.strval($comments_count).' comment(s), '.strval($likes_count).' like(s)
+							<div class="right">
+								<div class="author">
+									'.$value['author'].'
 								</div>
-								<img class="likebutton" src="imgs/like.png">
+								<div class="comment">
+									'.$value['commentary'].'
+								</div>
+								<div class="stats">
+									<div class="review">
+										<br>'.strval($comments_count).' comment(s), '.strval($likes_count).' like(s)
+									</div>
+									<img class="likebutton" src="imgs/like.png">
+								</div>
 							</div>
-						</div>
-					</span>';
+						</span>';
+			}
+			catch (Exception $e) {
+			}
 		}
 		echo '</div>';
 		echo '</div>';
@@ -180,11 +184,6 @@
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		list_images($conn);
-		// echo "Connected successfully";
-		$create_token = $conn->prepare('INSERT INTO images (b64, author, commentary) VALUES (?, ?, "");');
-		$create_token->bindParam(1, $contents);
-		$create_token->bindParam(2, $email);
-		$create_token->execute();
 	}
 	catch(PDOException $e)
 	{

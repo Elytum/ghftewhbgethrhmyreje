@@ -1,6 +1,6 @@
 <?php
 	$ids = $_POST['ids'];
-	$newemail = $_POST['newemail'];
+	$newusername = $_POST['newusername'];
 	$newpassword = $_POST['newpassword'];
 	$password = $_POST['password'];
 
@@ -23,7 +23,7 @@
 		return null;
 	}
 /*NOT READY*/
-	function update_user($conn, $email, $password, $newemail, $newpassword, $token)
+	function update_user($conn, $email, $password, $newusername, $newpassword, $token)
 	{
 		$check_user = $conn->prepare('SELECT password FROM users WHERE email=?');
 		$check_user->bindParam(1, $email);
@@ -40,20 +40,21 @@
 			return (0);
 		}
 		// print_r('alive');
-		$update_user = $conn->prepare('UPDATE users SET email=?,password=? WHERE email=?;');
-		$update_user->bindParam(1, $newemail);
+		$update_user = $conn->prepare('UPDATE users SET username=?,password=? WHERE email=?;');
+		$update_user->bindParam(1, $newusername);
 		$update_user->bindParam(2, hash('whirlpool',$newpassword));
 		$update_user->bindParam(3, $email);
 		$update_user->execute();
 		// echo 'Info: Information changed';
-		$update_token = $conn->prepare('UPDATE tokens SET email=? WHERE email=?;');
-		$update_token->bindParam(1, $newemail);
+		$update_token = $conn->prepare('UPDATE tokens SET username=? WHERE email=?;');
+		$update_token->bindParam(1, $newusername);
 		$update_token->bindParam(2, $email);
 		$update_token->execute();
 
 		$json = array(
-			"email" => $newemail, 
-			"token" => bin2hex($token)
+			"email" => $email, 
+			"token" => bin2hex($token),
+			"username" => $newusername
 		);
 		echo("OK: ".bin2hex(json_encode($json)));
 		// echo 'Info: Information changed 2';
@@ -93,7 +94,7 @@
 		if ($newpassword == null)
 			$newpassword = $password;
 		// echo '4:';
-		if (($check = valid_logs($newemail, $newpassword)) != null) {
+		if (($check = valid_logs($newusername, $newpassword)) != null) {
 			// echo '5:';
 			echo $check;
 			return ;
@@ -105,7 +106,7 @@
 		else
 		{
 		// echo '7:';
-			update_user($conn, $email, $password, $newemail, $newpassword, $token);
+			update_user($conn, $email, $password, $newusername, $newpassword, $token);
 		// echo '8:';
 		}
 		// echo '9:';

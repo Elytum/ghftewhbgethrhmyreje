@@ -3,11 +3,11 @@
 	$email = $_POST['email'];
 	$password = $_POST['password'];
 
-/*CREATE TABLE users (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, username VARCHAR(255), email VARCHAR(255), password VARCHAR(255), creation_date INT );*/
-/*CREATE TABLE tokens (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, email VARCHAR(255), token VARCHAR(255), last_request INT );*/
-/*CREATE TABLE images (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, b64 TEXT CHARACTER SET ascii, author VARCHAR(255), commentary VARCHAR(255) );*/
-/*CREATE TABLE comments (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image INT, author VARCHAR(255), content VARCHAR(255) );*/
-/*CREATE TABLE likes (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image INT, author VARCHAR(255) );*/
+/*CREATE TABLE users (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, username VARCHAR(255), email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, creation_date INT );*/
+/*CREATE TABLE tokens (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL, token VARCHAR(255) NOT NULL, last_request INT );*/
+/*CREATE TABLE images (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, b64 TEXT CHARACTER SET ascii NOT NULL, author VARCHAR(255) NOT NULL, commentary VARCHAR(255) );*/
+/*CREATE TABLE comments (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image INT, author VARCHAR(255) NOT NULL, content VARCHAR(255) NOT NULL );*/
+/*CREATE TABLE likes (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image INT, author VARCHAR(255) NOT NULL );*/
 
 	function user_exist($conn, $email)
 	{
@@ -28,10 +28,11 @@
 			return (0);
 		}
 		date_default_timezone_set('Europe/Paris');
-		$create_user = $conn->prepare('INSERT INTO users (username,email,password,creation_date) VALUES ("", ?, ?, ?);');
-		$create_user->bindParam(1, $email);
-		$create_user->bindParam(2, hash('whirlpool',$password));
-		$create_user->bindParam(3, date_timestamp_get(date_create()));
+		$create_user = $conn->prepare('INSERT INTO users (username,email,password,creation_date) VALUES (?, ?, ?, ?);');
+		$create_user->bindParam(1, explode("@", $email)[0]);
+		$create_user->bindParam(2, $email);
+		$create_user->bindParam(3, hash('whirlpool',$password));
+		$create_user->bindParam(4, date_timestamp_get(date_create()));
 		$create_user->execute();
 		connect_user($conn, $email, $password);
 	}
@@ -93,7 +94,7 @@
 	function connect_user($conn, $email, $password)
 	{
 		// $connect_user = $conn->prepare('SELECT email FROM users WHERE email=? AND password=?;');
-		$connect_user = $conn->prepare('SELECT password FROM users WHERE email=?');
+		$connect_user = $conn->prepare('SELECT username, password FROM users WHERE email=?');
 		$connect_user->bindParam(1, $email);
 		// $connect_user->bindParam(2, hash('whirlpool',$password));
 		$connect_user->execute();
@@ -113,7 +114,8 @@
 		$token = create_token($conn, $email);
 		$json = array(
 			"email" => $email, 
-			"token" => bin2hex($token)
+			"token" => bin2hex($token),
+			"username" => $result[0]['username']
 		);
 		echo(bin2hex(json_encode($json)));
 	}
