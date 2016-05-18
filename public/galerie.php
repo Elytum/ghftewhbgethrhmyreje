@@ -141,6 +141,11 @@
 				catch (Exception $e) {
 					$comments_count = 0;
 				}
+
+				$get_user = $conn->prepare("SELECT username FROM users WHERE email=?;");
+				$get_user->bindParam(1, $value['author']);
+				$get_user->execute();
+				$user = $get_user->fetchAll()[0]['username'];
 				if ($value['author'] == null)
 					continue ;
 				echo	'<span class="element" onclick="clicked(\''.$id.'\')">
@@ -149,7 +154,7 @@
 							</div>
 							<div class="right">
 								<div class="author">
-									'.$value['author'].'
+									'.$user.'
 								</div>
 								<div class="comment">
 									'.$value['commentary'].'

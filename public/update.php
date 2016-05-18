@@ -4,10 +4,10 @@
 	$newpassword = $_POST['newpassword'];
 	$password = $_POST['password'];
 
-	function valid_logs($email, $password)
+	function valid_logs($user, $password)
 	{
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-			return "Warning: Invalid email format"; 
+		if ($user == '') {
+			return "Warning: Missing username"; 
 		}
 		if (strlen($password) < 8) {
 			return "Warning: Password too short!";
@@ -39,17 +39,11 @@
 			echo 'Error: Wrong password';
 			return (0);
 		}
-		// print_r('alive');
 		$update_user = $conn->prepare('UPDATE users SET username=?,password=? WHERE email=?;');
 		$update_user->bindParam(1, $newusername);
 		$update_user->bindParam(2, hash('whirlpool',$newpassword));
 		$update_user->bindParam(3, $email);
 		$update_user->execute();
-		// echo 'Info: Information changed';
-		$update_token = $conn->prepare('UPDATE tokens SET username=? WHERE email=?;');
-		$update_token->bindParam(1, $newusername);
-		$update_token->bindParam(2, $email);
-		$update_token->execute();
 
 		$json = array(
 			"email" => $email, 

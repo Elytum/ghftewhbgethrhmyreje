@@ -9,8 +9,8 @@
 		<div class="accountbox">
 			<h1>Account settings</h1>
 
-			<h1>New email:</h1>
-			<input id="newemail" type="email" name="email" value="" class="formular" />
+			<h1>New username:</h1>
+			<input id="newusername" type="text" name="newusername" value="" class="formular" />
 			<br>
 			<h1>New password:</h1>
 			<input id="newpassword" type="password" name="" value="" class="formular" />
@@ -73,7 +73,7 @@
 				}
 
 				document.addEventListener("DOMContentLoaded", function(event) {
-					document.getElementById('newemail').value = JSON.parse(hex2bin(localStorage.getItem('ids')))['username'];
+					document.getElementById('newusername').value = JSON.parse(hex2bin(localStorage.getItem('ids')))['username'];
 				})
 
 				function handleClick(type) {
