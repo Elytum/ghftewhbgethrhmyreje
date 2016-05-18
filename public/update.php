@@ -1,4 +1,6 @@
 <?php
+	if (array_key_exists ('ids' , $_POST) == false || array_key_exists ('password' , $_POST) == false || array_key_exists ('newusername' , $_POST) == false || array_key_exists ('newpassword' , $_POST) == false)
+		return ;
 	$ids = $_POST['ids'];
 	$newusername = $_POST['newusername'];
 	$newpassword = $_POST['newpassword'];
@@ -73,7 +75,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagru";
+	$dbname = "camagruDB";
 
 		// echo 'Error: ';
 	try {

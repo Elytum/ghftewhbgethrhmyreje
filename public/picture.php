@@ -83,7 +83,7 @@
 
 			xhr.open("POST", "comment.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhr.send("ids="+localStorage.getItem('ids')+"&id="+<?php echo '"'.$_GET['id'].'"'?>+"&comment="+comment);
+			xhr.send("ids="+localStorage.getItem('ids')+"&id="+<?php if (array_key_exists ('id' , $_GET) == false) echo "\"\"" else echo "\"".$_GET['id']."\""?>+"&comment="+comment);
 		}
 
 		function like() {
@@ -103,7 +103,7 @@
 			};
 			xhr.open("POST", "like.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhr.send("ids="+localStorage.getItem('ids')+"&id="+<?php echo '"'.$_GET['id'].'"'?>);
+			xhr.send("ids="+localStorage.getItem('ids')+"&id="+<?php if (array_key_exists ('id' , $_GET) == false) echo "\"\"" else echo "\"".$_GET['id']."\""?>);
 		}
 
 		function setupLike() {
@@ -121,7 +121,7 @@
 			};
 			xhr.open("POST", "do_like.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhr.send("ids="+localStorage.getItem('ids')+"&id="+<?php echo '"'.$_GET['id'].'"'?>);
+			xhr.send("ids="+localStorage.getItem('ids')+"&id="+<?php if (array_key_exists ('id' , $_GET) == false) echo "\"\"" else echo "\"".$_GET['id']."\""?>);
 		}
 
 		var likesReady = true;
@@ -141,7 +141,7 @@
 				};
 				requestLikes.open("POST", "count_likes.php", true);
 				requestLikes.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-				requestLikes.send("id="+<?php echo '"'.$_GET['id'].'"'?>);
+				requestLikes.send("id="+<?php if (array_key_exists ('id' , $_GET) == false) echo "\"\"" else echo "\"".$_GET['id']."\""?>);
 			}
 			if (document.getElementById("commentaries") != null && commentsReady == true)
 			{
@@ -166,7 +166,7 @@
 				};
 				requestComments.open("POST", "get_comments.php", true);
 				requestComments.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-				requestComments.send("id="+<?php echo '"'.$_GET['id'].'"'?>+"&from="+document.getElementsByName("commentary").length.toString());
+				requestComments.send("id="+<?php if (array_key_exists ('id' , $_GET) == false) echo "\"\"" else echo "\"".$_GET['id']."\""?>+"&from="+document.getElementsByName("commentary").length.toString());
 			}
 			setTimeout(update, 1000);
 		}
@@ -229,7 +229,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagru";
+	$dbname = "camagruDB";
 
 	try {
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));

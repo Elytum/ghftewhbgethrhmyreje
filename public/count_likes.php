@@ -1,11 +1,13 @@
 <?php
+	if (array_key_exists ('id' , $_POST) == false)
+		return ;
 	$id = $_POST['id'];
 
 	$servername = "127.0.0.1";
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagru";
+	$dbname = "camagruDB";
 
 	try {
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));

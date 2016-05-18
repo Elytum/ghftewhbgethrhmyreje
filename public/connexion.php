@@ -1,11 +1,12 @@
 <?php
+	error_reporting(E_ERROR | E_PARSE);
 	function check_token($email, $token)
 	{
 		$servername = "127.0.0.1";
 		$username = "root";
 		$password = "";
 		$port = "8081";
-		$dbname = "camagru";
+		$dbname = "camagruDB";
 		try {
 			$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $password, array( PDO::ATTR_PERSISTENT => true));
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -27,6 +28,10 @@
 	}
 
 	try {
+		if (array_key_exists ('ids' , $_POST) == false)
+			return ;
+		if ($_POST['ids'] == null)
+			return;
 		$ids = json_decode(hex2bin($_POST['ids']), true);
 		if (check_token($ids['email'], hex2bin($ids['token'])) == 0)
 			echo 'Not connected';

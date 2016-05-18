@@ -46,11 +46,13 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagru";
+	$dbname = "camagruDB";
 
 	try {
 		// echo 'Info: ';
-
+		if (array_key_exists ('ids' , $_POST) == false ||
+			array_key_exists ('password' , $_POST) == false)
+			return ;
 		$ids = json_decode(hex2bin($_POST['ids']), true);
 		$password = $_POST['password'];
 		$email = $ids['email'];
@@ -58,18 +60,6 @@
 
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		// echo "Connected successfully";
-		// $ids = json_decode(hex2bin($token), true);
-		// print_r($ids);
-		// print_r($ids['token']);
-		// $email = $ids['email'];
-		// $token = hex2bin($ids['token']);
-		// print_r('Ids:');
-		// print_r($ids);
-		// print_r('Email:');
-		// print_r($email);
-		// print_r('Token:');
-		// print_r($token);
 		if (check_token($conn, $email, $token) == 0)
 			echo 'Error: Your token seems broken';
 		else

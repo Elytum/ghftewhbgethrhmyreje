@@ -62,6 +62,12 @@
 							document.getElementById("response").innerHTML = xhr.responseText;
 							document.getElementById("response").className = 'warning';
 						}
+						else if (xhr.responseText.startsWith("Info: "))
+						{
+							document.getElementById("response").style.display = 'block';
+							document.getElementById("response").innerHTML = xhr.responseText;
+							document.getElementById("response").className = 'info';
+						}
 						else
 						{
 							localStorage.setItem('ids', xhr.responseText);
@@ -89,6 +95,7 @@
 			
 			<a onclick="handleClick('login');" ><div class="btn">Sign In</div></a>
 			<a onclick="handleClick('subscribe');" ><div id="btn2">Sign Up</div></a>
+			<a onclick="handleClick('forgot');" ><div class="btn">Forgot password</div></a>
 
 		</div>
 	  

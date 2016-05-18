@@ -1,4 +1,8 @@
 <?php
+	if (array_key_exists ('ids' , $_POST) == false ||
+		array_key_exists ('comment' , $_POST) == false ||
+		array_key_exists ('id' , $_POST) == false)
+		return ;
 	$ids = json_decode(hex2bin($_POST['ids']), true);
 	$email = $ids['email'];
 	$token = hex2bin($ids['token']);
@@ -21,7 +25,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagru";
+	$dbname = "camagruDB";
 
 	try {
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));

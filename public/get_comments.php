@@ -1,5 +1,8 @@
 <?php
 	try {
+		if (array_key_exists ('id' , $_POST) == false ||
+			array_key_exists ('from' , $_POST) == false)
+			return ;
 		$id = $_POST['id'];
 		$from = $_POST['from'];
 
@@ -7,7 +10,7 @@
 		$username = "root";
 		$pass = "";
 		$port = "8081";
-		$dbname = "camagru";
+		$dbname = "camagruDB";
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

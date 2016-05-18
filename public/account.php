@@ -137,5 +137,6 @@
 
 
 	<?php include('footer.php');?>
+	<?php mail("camagruachazal@gmail.com","Subject","Message"); ?>
 	</body>
 </html>
