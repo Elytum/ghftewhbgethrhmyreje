@@ -42,7 +42,7 @@
 			return (0);
 		}
 		$update_user = $conn->prepare('UPDATE users SET username=?,password=? WHERE email=?;');
-		$update_user->bindParam(1, $newusername);
+		$update_user->bindParam(1, htmlspecialchars($newusername, ENT_QUOTES, 'UTF-8'));
 		$update_user->bindParam(2, hash('whirlpool',$newpassword));
 		$update_user->bindParam(3, $email);
 		$update_user->execute();
@@ -75,7 +75,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagruDB";
+	$dbname = "camagru";
 
 		// echo 'Error: ';
 	try {

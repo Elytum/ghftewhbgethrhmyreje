@@ -151,6 +151,7 @@
 					if (requestComments.readyState == 4 && requestComments.status == 200) {
 						try {
 							var newComments = JSON.parse(requestComments.responseText);
+							console.log(newComments);
 							for (id in newComments) {
 								var newDiv = document.createElement("div");
 								newDiv.className = "commentary";
@@ -229,7 +230,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagruDB";
+	$dbname = "camagru";
 
 	try {
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));

@@ -151,10 +151,12 @@
 	function forgot_password($conn, $email)
 	{
 		if ($email == '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-			echo 'Warning: Please provide your email'; 
+			echo 'Warning: Please provide your email';
+			return;
 		}
 		else if (email_exists($conn, $email) == false) {
 			echo 'Warning: Unknown email'; 
+			return;
 		}
 		else {
 			$count_resets = $conn->prepare('SELECT COUNT(*) FROM resets WHERE email=?;');
@@ -184,7 +186,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagruDB";
+	$dbname = "camagru";
 	if ($type == 'subscribe')
 	{
 		if (($check = valid_logs($email, $password)) != null) {

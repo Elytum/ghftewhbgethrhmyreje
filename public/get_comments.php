@@ -10,7 +10,7 @@
 		$username = "root";
 		$pass = "";
 		$port = "8081";
-		$dbname = "camagruDB";
+		$dbname = "camagru";
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 

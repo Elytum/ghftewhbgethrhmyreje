@@ -46,7 +46,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagruDB";
+	$dbname = "camagru";
 
 	try {
 		// echo 'Info: ';

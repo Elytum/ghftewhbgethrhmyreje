@@ -6,7 +6,7 @@
 		$username = "root";
 		$password = "";
 		$port = "8081";
-		$dbname = "camagruDB";
+		$dbname = "camagru";
 		try {
 			$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $password, array( PDO::ATTR_PERSISTENT => true));
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

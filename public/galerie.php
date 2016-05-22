@@ -3,15 +3,6 @@
 		<?php include('header.php');?>
 	</head>
 	<body>
-	<script>
-
-		function clicked(id)
-		{
-			window.location = "picture.php?id="+id.toString();
-		}
-
-	</script>
-
 	<style>
 
 	/*.fb-page {
@@ -111,12 +102,31 @@
 
 	</style>
 
+<script>
+	var ignore = false;
+
+	function clicked(id)
+	{
+		if (ignore == false)
+			window.location = "picture.php?id="+id.toString();
+		else
+			ignore = true;
+	}
+
+	function like(id) {
+		ignore = true;
+		console.log("Like on "+id);
+	}
+</script>
+
 <?php
-	function list_images($conn)
+	function list_images($conn, $page)
 	{
 		echo '<div class="galerie">';
 		echo '<div class="content" id="list">';
-		$list_images = $conn->prepare("SELECT id, b64, author, commentary FROM images;");
+		$list_images = $conn->prepare("SELECT id, b64, author, commentary FROM images WHERE id >= ? LIMIT 10;");
+		$page = ($page - 1) * 10;
+		$list_images->bindParam(1, $page);
 		$list_images->execute();
 		$result = $list_images->fetchAll();
 		$counter = 0;
@@ -163,7 +173,7 @@
 									<div class="review">
 										<br>'.strval($comments_count).' comment(s), '.strval($likes_count).' like(s)
 									</div>
-									<img class="likebutton" src="imgs/like.png">
+									<img onclick="like('.$id.')" class="likebutton" src="imgs/like.png">
 								</div>
 							</div>
 						</span>';
@@ -171,6 +181,7 @@
 			catch (Exception $e) {
 			}
 		}
+		echo '<span class="element"><div class="left"></div><div class="right"></div></span>';
 		echo '</div>';
 		echo '</div>';
 		$counter = $counter + 1;
@@ -182,13 +193,18 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagruDB";
+	$dbname = "camagru";
+
+	if (array_key_exists ('page' , $_GET))
+		$page = $_GET['page'];
+	else
+		$page = 1;
 
 	try {
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-		list_images($conn);
+		list_images($conn, $page);
 	}
 	catch(PDOException $e)
 	{

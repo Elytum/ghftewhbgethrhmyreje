@@ -22,7 +22,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagruDB";
+	$dbname = "camagru";
 	try {
 		$newpassword = $_GET['newpassword'];
 		$email = $_GET['email'];

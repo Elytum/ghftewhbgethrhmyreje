@@ -25,7 +25,7 @@
 	$username = "root";
 	$pass = "";
 	$port = "8081";
-	$dbname = "camagruDB";
+	$dbname = "camagru";
 
 	try {
 		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
@@ -37,8 +37,20 @@
 		$add_comment = $conn->prepare('INSERT INTO comments (image, author, content) VALUES (?, ?, ?);');
 		$add_comment->bindParam(1, $id);
 		$add_comment->bindParam(2, $email);
-		$add_comment->bindParam(3, $comment);
+		$add_comment->bindParam(3, htmlspecialchars($comment, ENT_QUOTES, 'UTF-8'));
 		$add_comment->execute();
+
+		$get_author = $conn->prepare('SELECT author from images WHERE id=?;');
+		$get_author->bindParam(1, $id);
+		$get_author->execute();
+		$get_author = $get_author->fetchAll();
+
+		$author = $get_author[0]['author'];
+		echo $author;
+
+		if ($author == $email)
+			return;
+		mail($author,"Picture commented",$email." just commented your picture:\nhttp://127.0.0.1:8080/picture.php?id=".$id);
 	}
 	catch(PDOException $e)
 	{
