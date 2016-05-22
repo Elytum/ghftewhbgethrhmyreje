@@ -1,7 +1,4 @@
 <html>
-	<head>
-		<?php include('header.php');?>
-	</head>
 	<body>
 	<style>
 
@@ -100,36 +97,84 @@
 		width: 50px;
 	}
 
+#nav {
+    text-align: justify;
+    width: 50%;
+	margin: auto;
+    /*min-width: 500px;*/
+}
+#nav:after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+}
+#nav li {
+    display: inline-block;
+}
 	</style>
-
-<script>
-	var ignore = false;
-
-	function clicked(id)
-	{
-		if (ignore == false)
-			window.location = "picture.php?id="+id.toString();
-		else
-			ignore = true;
-	}
-
-	function like(id) {
-		ignore = true;
-		console.log("Like on "+id);
-	}
-</script>
 
 <?php
 	function list_images($conn, $page)
 	{
+		$nb_pages = 5;
+
+		$pages_count = $conn->prepare("SELECT COUNT(*) FROM images;");
+		$pages_count->bindParam(1, $id);
+		$pages_count->execute();
+		try {
+			$pages_count = ceil($pages_count->fetchAll()[0][0] / 10);
+		}
+		catch (Exception $e) {
+			$pages_count = 0;
+		}
+		if ($page < 1 && $pages_count != 0) {
+			header('Location: galerie.php');
+			exit();
+		}
+		else if ($page > $pages_count) {
+			header('Location: galerie.php?page='.$pages_count);
+			exit();
+		}
+		echo '<head>';
+		echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+		echo '<meta charset="UTF-8">';
+		echo '<title>Camagru</title>';
+		echo '<link rel="stylesheet" type="text/css" href="header.css">';
+		echo '<link rel="stylesheet" type="text/css" href="style.css">';
+		echo '<ul id="header" class="header">';
+		echo '	<li class="header"><a id="account.php" href="account.php">Mon compte</a></li>';
+		echo '	<li class="header"><a id="montage.php" href="montage.php">Montage</a></li>';
+		echo '	<li class="header"><a id="galerie.php" href="galerie.php">Galerie</a></li>';
+		echo '	<li class="header"><a onclick="disconnect()" href="index.php">Deconnection</a></li>';
+		echo '</ul class="header">';
+		echo '</head>';
+		$first = $page - intval($nb_pages / 2);
+		$last = $page + intval($nb_pages / 2);
+		if ($first < 1) {
+			$last += -$first + 1;
+			$first = 1;
+		}
+		if ($last > $pages_count) {
+			$first += $pages_count - $last;
+			$last = $pages_count;
+		}
+		if ($first < 1)
+			$first = 1;
+
+		echo '<ul id="nav">';
+		while ($first <= $last) {
+			echo '<li><a href="galerie.php?page='.$first.'">'.$first.'</a></li>
+';
+			$first += 1;
+		}
+		echo '</ul>';
+
 		echo '<div class="galerie">';
 		echo '<div class="content" id="list">';
-		$list_images = $conn->prepare("SELECT id, b64, author, commentary FROM images WHERE id >= ? LIMIT 10;");
 		$page = ($page - 1) * 10;
-		$list_images->bindParam(1, $page);
+		$list_images = $conn->prepare("SELECT id, b64, author, commentary FROM images LIMIT ".strval(intval($page)).", 10;");
 		$list_images->execute();
 		$result = $list_images->fetchAll();
-		$counter = 0;
 		foreach ($result as $value) {
 			try {
 				$id = $value['id'];
@@ -158,6 +203,18 @@
 				$user = $get_user->fetchAll()[0]['username'];
 				if ($value['author'] == null)
 					continue ;
+
+
+				$get_like = $conn->prepare('SELECT * FROM likes WHERE image=? AND author=?;');
+				$get_like->bindParam(1, $id);
+				$get_like->bindParam(2, $email);
+				$get_like->execute();
+				$result = $get_like->fetchAll();
+				if (count($result) >= 1)
+					$img = 'imgs/liked.png';
+				else
+					$img = 'imgs/like.png';
+
 				echo	'<span class="element" onclick="clicked(\''.$id.'\')">
 							<div class="left">
 								<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$value['b64'].'">
@@ -173,7 +230,7 @@
 									<div class="review">
 										<br>'.strval($comments_count).' comment(s), '.strval($likes_count).' like(s)
 									</div>
-									<img onclick="like('.$id.')" class="likebutton" src="imgs/like.png">
+									<img id="'.$id.'" onclick="like('.$id.')" class="likebutton" src="'.$img.'">
 								</div>
 							</div>
 						</span>';
@@ -181,12 +238,9 @@
 			catch (Exception $e) {
 			}
 		}
-		echo '<span class="element"><div class="left"></div><div class="right"></div></span>';
+		echo '<span><div class="left"></div><div class="right"></div></span>';
 		echo '</div>';
 		echo '</div>';
-		$counter = $counter + 1;
-		if ($counter == 10)
-			return ;
 	}
 
 	$servername = "127.0.0.1";
@@ -212,6 +266,99 @@
 	}
 ?>
 
+<script>
+
+	function getXMLHttpRequest() {
+		var xhr = null;
+
+		if (window.XMLHttpRequest || window.ActiveXObject) {
+			if (window.ActiveXObject) {
+				try {
+					xhr = new ActiveXObject("Msxml2.XMLHTTP");
+				}
+				catch(e) {
+					xhr = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+			}
+			else {
+				xhr = new XMLHttpRequest(); 
+			}
+		} else {
+			alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
+			return null;
+		}
+		return xhr;
+	}
+
+	var ignore = false;
+	var can_like = false;
+
+	function clicked(id)
+	{
+		if (ignore == false)
+			window.location = "picture.php?id="+id.toString();
+		else
+			ignore = false;
+	}
+
+	function like(id) {
+		if (localStorage.getItem('ids') == null)
+			return;
+		ignore = true;
+		if (can_like == false)
+			return ;
+		var xhr = getXMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				if (xhr.responseText != '')
+				{
+					var fullPath = document.getElementById(id).src;
+					var filename = fullPath.replace(/^.*[\\\/]/, '');
+					if (filename == "like.png")
+						document.getElementById(id).src = "imgs/liked.png";
+					else
+						document.getElementById(id).src = "imgs/like.png";
+				}
+			}
+		};
+		xhr.open("POST", "like.php", true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send("ids="+localStorage.getItem('ids')+"&id="+id);
+	}
+
+	function update_like(id) {
+		if (localStorage.getItem('ids') == null)
+			return;
+		var xhr2 = getXMLHttpRequest();
+		xhr2.onreadystatechange = function() {
+			if (xhr2.readyState == 4 && xhr2.status == 200) {
+				if (xhr2.responseText != '')
+				{
+					if (xhr2.responseText == 'YES')
+						document.getElementById(id).src = "imgs/liked.png";
+					else
+						document.getElementById(id).src = "imgs/like.png";
+				}
+			}
+		};
+		xhr2.open("POST", "do_like.php", true);
+		xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr2.send("ids="+localStorage.getItem('ids')+"&id="+id);
+	}
+
+	function update_likes() {
+		var elements = document.getElementsByClassName("likebutton");
+		for (element in elements) {
+			id = elements[element]['id'];
+			if (id == undefined)
+				continue;
+			update_like(id);
+		}
+		can_like = true;
+	}
+
+	window.onload = update_likes();
+</script>
 	<br><br><br><br><br><br>
 	<?php include('footer.php');?>
 	</body>

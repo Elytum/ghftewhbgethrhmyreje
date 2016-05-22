@@ -3,6 +3,42 @@
 		<?php include('header.php');?>
 	</head>
 	<body>
+
+<!-- <input type="file" accept="image/*" onchange="loadFile(event)"> -->
+<input type="file" accept="image/*" onchange="loadFile()"><br>
+<img id="output"/>
+<script>
+  var loadFile = function() {
+	var file	= document.querySelector('input[type=file]').files[0];
+	var reader	= new FileReader();
+
+	reader.addEventListener("load", function () {
+		if (document.getElementById('undefined') == null)
+		{
+			var video = document.getElementById('videoElement');
+			video.pause();
+			video.id = 'undefined';
+			video.style.display = 'none';
+			var picture = document.getElementById('pictureElement');
+			picture.id = 'videoElement';
+			picture.style.display = 'block';
+		}
+		else 
+			var picture = document.getElementById('videoElement');
+		picture.src = reader.result;
+		// var send_raw = getXMLHttpRequest();
+		// console.log(reader.result);
+		// send_raw.open("POST", "takePicture.php", true);
+		// send_raw.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		// send_raw.send('ids='+localStorage.getItem('ids')+'&img='+reader.result+'&addon='+document.getElementById("cornerimage").src.replace(/^.*[\\\/]/, ''));
+	}, false);
+
+	if (file) {
+		reader.readAsDataURL(file);
+	}
+  };
+</script>
+
 	<br>
 	<?php include('footer.php');?>
 
@@ -30,6 +66,7 @@
 	<div id="container">
 	    <video autoplay="true" id="videoElement">
 	    </video>
+	    <img style="display:none;" autoplay="true" id="pictureElement">
 	   	<img width="500" height="375" src="" id="cornerimage"/>
 	   	<!-- <img width="500" height="375" src="moving_cat.gif" id="cornerimage"/> -->
 	</div>
@@ -96,12 +133,19 @@
 		}
 
 		function savePicture() {
-			var video = document.getElementById('videoElement');
 			var drawCanvas = document.getElementById('drawCanvas');
-			drawCanvas.height = video.videoHeight;
-			drawCanvas.width = video.videoWidth;
+			if (document.getElementById('undefined') == null)
+			{
+				var video = document.getElementById('videoElement');
+				drawCanvas.height = video.videoHeight;
+				drawCanvas.width = video.videoWidth;
 
-			draw(video, drawCanvas);
+				draw(video, drawCanvas);
+			}
+			else {
+				var context = drawCanvas.getContext('2d');
+				context.drawImage(document.getElementById('videoElement'), 0, 0, 400, 400);
+			}
 			var base64 = drawCanvas.toDataURL();
 
 			var xhr = getXMLHttpRequest();
@@ -116,7 +160,7 @@
 			var context = drawCanvas.getContext('2d');
 
 			// draw the video contents into the canvas x, y, width, height
-			context.drawImage( video, 0, 0, drawCanvas.width, drawCanvas.height);
+			context.drawImage(video, 0, 0, drawCanvas.width, drawCanvas.height);
 
 			// get the image data from the canvas object
 			var dataURL = drawCanvas.toDataURL("image/jpeg");

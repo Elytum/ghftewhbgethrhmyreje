@@ -14,6 +14,10 @@
 /*CREATE TABLE likes (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, image INT, author VARCHAR(255) NOT NULL );*/
 /*CREATE TABLE resets (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL, token VARCHAR(40) NOT NULL );*/
 
+
+//DELETE MONTAGE
+//ADD IMAGE
+
 	function user_exist($conn, $email)
 	{
 		$user_exist = $conn->prepare("SELECT email FROM users WHERE email=?;");

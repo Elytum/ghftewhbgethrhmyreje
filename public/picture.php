@@ -1,3 +1,89 @@
+<script>
+
+	function hex2bin(hex)
+	{
+		var bytes = [], str;
+
+		for(var i=0; i< hex.length-1; i+=2)
+		bytes.push(parseInt(hex.substr(i, 2), 16));
+
+		return String.fromCharCode.apply(String, bytes);    
+	}
+
+</script>
+
+<?php
+	function put_image($conn, $id)
+	{
+		$put_image = $conn->prepare("SELECT b64, author, commentary FROM images WHERE id=?;");
+		$put_image->bindParam(1, $id);
+		$put_image->execute();
+		$result = $put_image->fetchAll();
+		if (count($result) == 0) {
+			header('Location: /galerie.php');
+			exit();
+		}
+		try {
+			$author = $result[0]['author'];
+			$b64 = $result[0]['b64'];
+			$get_comments = $conn->prepare('SELECT author, content from comments WHERE image=?;');
+			$get_comments->bindParam(1, $id);
+			$get_comments->execute();
+			$result = $get_comments->fetchAll();
+
+			$get_likes = $conn->prepare('SELECT * FROM likes WHERE image=?;');
+			$get_likes->bindParam(1, $id);
+			$get_likes->execute();
+			$likes = $get_likes->fetchAll();
+			echo '<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$b64.'">';
+			echo '<div id="commentaries" class="commentaries">';
+			echo '<div id=likes>'.count($likes).' like(s)'.'</div>';
+			echo '<div style="background-color:red;visibility:hidden;width:100px;margin:auto;" onclick=\'_delete('.$id.');\' id=delete> DELETE</div>';
+			foreach ($result as $comment) {
+				echo '	<div name="commentary" class="commentary">';
+				echo $comment['author'];
+				echo '<br>';
+				echo $comment['content'];
+				echo '</div>';
+			}
+			echo '</div>';
+			echo '<textarea id="comment" class="comment_field" maxlength="255"></textarea>';
+			echo '<img onclick="send();" class="comment_button" src="imgs/send.png">';
+			echo '<img id="like_button" width=50px height=50px onclick="like();" src="imgs/like.png">';
+			echo '<br><br><br><br><br><br><br><br><br><br><br><br>';
+			echo '
+<script>
+	if (JSON.parse(hex2bin(localStorage.getItem(\'ids\')))[\'email\'] == \''.$author.'\')
+		document.getElementById(\'delete\').style.visibility = \'visible\';
+</script>';
+		}
+		catch(PDOException $e)
+		{
+			echo "Error: Unknown";//Connection failed on login: " . $e->getMessage();
+			// echo $e->getMessage();
+		}
+	}
+
+	$picture_id = $_GET['id'];
+
+	$servername = "127.0.0.1";
+	$username = "root";
+	$pass = "";
+	$port = "8081";
+	$dbname = "camagru";
+
+	try {
+		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
+		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		put_image($conn, $picture_id);
+	}
+	catch(PDOException $e)
+	{
+		echo "Error: Unknown";//Connection failed on login: " . $e->getMessage();
+		echo $e->getMessage();
+	}
+?>
+
 <html>
 	<head>
 		<?php include('header.php');?>
@@ -41,16 +127,6 @@
 	</style>
 
 	<script>
-
-		function hex2bin(hex)
-		{
-			var bytes = [], str;
-
-			for(var i=0; i< hex.length-1; i+=2)
-			bytes.push(parseInt(hex.substr(i, 2), 16));
-
-			return String.fromCharCode.apply(String, bytes);    
-		}
 
 		function getXMLHttpRequest() {
 			var xhr = null;
@@ -151,7 +227,7 @@
 					if (requestComments.readyState == 4 && requestComments.status == 200) {
 						try {
 							var newComments = JSON.parse(requestComments.responseText);
-							console.log(newComments);
+							// console.log(newComments);
 							for (id in newComments) {
 								var newDiv = document.createElement("div");
 								newDiv.className = "commentary";
@@ -172,6 +248,24 @@
 			setTimeout(update, 1000);
 		}
 
+		function _delete(id) {
+			console.log('_delete');
+			var deletePicture = getXMLHttpRequest();
+				deletePicture.onreadystatechange = function() {
+					if (deletePicture.readyState == 4 && deletePicture.status == 200) {
+						try {
+							if (deletePicture.responseText == 'DELETED')
+								window.location.href = 'galerie.php';
+						}
+						catch (e) {
+						}
+					}
+				};
+				deletePicture.open("POST", "delete_pic.php", true);
+				deletePicture.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				deletePicture.send("ids="+localStorage.getItem('ids')+"&id="+id);
+		}
+
 		update();
 
 		window.onload = setupLike;
@@ -182,64 +276,3 @@
 	<?php include('footer.php');?>
 	</body>
 </html>
-
-<?php
-	function put_image($conn, $id)
-	{
-		$put_image = $conn->prepare("SELECT b64, author, commentary FROM images WHERE id=?;");
-		$put_image->bindParam(1, $id);
-		$put_image->execute();
-		$result = $put_image->fetchAll();
-		try {
-			$b64 = $result[0]['b64'];
-			$get_comments = $conn->prepare('SELECT author, content from comments WHERE image=?;');
-			$get_comments->bindParam(1, $id);
-			$get_comments->execute();
-			$result = $get_comments->fetchAll();
-
-			$get_likes = $conn->prepare('SELECT * FROM likes WHERE image=?;');
-			$get_likes->bindParam(1, $id);
-			$get_likes->execute();
-			$likes = $get_likes->fetchAll();
-			echo '<img class="picture" src="data:image/jpeg;charset=utf-8;base64,'.$b64.'">';
-			echo '<div id="commentaries" class="commentaries">';
-			echo '<div id=likes>'.count($likes).' like(s)'.'</div>';
-			foreach ($result as $comment) {
-				echo '	<div name="commentary" class="commentary">';
-				echo $comment['author'];
-				echo '<br>';
-				echo $comment['content'];
-				echo '</div>';
-			}
-			echo '</div>';
-			echo '<textarea id="comment" class="comment_field" maxlength="255"></textarea>';
-			echo '<img onclick="send();" class="comment_button" src="imgs/send.png">';
-			echo '<img id="like_button" width=50px height=50px onclick="like();" src="imgs/like.png">';
-			echo '<br><br><br><br><br><br><br><br><br><br><br><br>';
-		}
-		catch(PDOException $e)
-		{
-			echo "Error: Unknown";//Connection failed on login: " . $e->getMessage();
-			// echo $e->getMessage();
-		}
-	}
-
-	$picture_id = $_GET['id'];
-
-	$servername = "127.0.0.1";
-	$username = "root";
-	$pass = "";
-	$port = "8081";
-	$dbname = "camagru";
-
-	try {
-		$conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname", $username, $pass, array( PDO::ATTR_PERSISTENT => true));
-		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		put_image($conn, $picture_id);
-	}
-	catch(PDOException $e)
-	{
-		echo "Error: Unknown";//Connection failed on login: " . $e->getMessage();
-		echo $e->getMessage();
-	}
-?>
