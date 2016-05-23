@@ -91,6 +91,7 @@
 		$create_token->bindParam(1, base64_encode($contents));
 		$create_token->bindParam(2, $email);
 		$create_token->execute();
+		echo base64_encode($contents);
 	}
 	catch(PDOException $e)
 	{

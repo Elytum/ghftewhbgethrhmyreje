@@ -26,11 +26,6 @@
 		else 
 			var picture = document.getElementById('videoElement');
 		picture.src = reader.result;
-		// var send_raw = getXMLHttpRequest();
-		// console.log(reader.result);
-		// send_raw.open("POST", "takePicture.php", true);
-		// send_raw.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		// send_raw.send('ids='+localStorage.getItem('ids')+'&img='+reader.result+'&addon='+document.getElementById("cornerimage").src.replace(/^.*[\\\/]/, ''));
 	}, false);
 
 	if (file) {
@@ -148,7 +143,24 @@
 			}
 			var base64 = drawCanvas.toDataURL();
 
+			if (base64 == 'data:,')
+				return ;
+			console.log(base64);
 			var xhr = getXMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					if (xhr.responseText != '')
+					{
+						var parent=document.getElementsByName('taken')[0];//get the div element
+						var child=document.createElement("div");//create a new div
+
+						child.className = "image";
+						child.style.backgroundSize = "100% 100%";
+						child.style.backgroundImage = 'url('+xhr.responseText+')';
+						parent.appendChild(child);
+					}
+				}
+			};
 			xhr.open("POST", "takePicture.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xhr.send('ids='+localStorage.getItem('ids')+'&img='+encodeURIComponent(base64)+'&addon='+document.getElementById("cornerimage").src.replace(/^.*[\\\/]/, ''));
@@ -218,5 +230,7 @@
 		}
 		echo '</div>';
 	?>
+	<div name="taken" id="images">
+	</div>
 	</body>
 </html>
