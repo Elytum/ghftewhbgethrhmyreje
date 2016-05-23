@@ -4,7 +4,7 @@
 	$addonPath = realpath($rootPics.'/'.$_POST['addon']);
 
 	$ids = $_POST['ids'];
-	echo 'BEGIN'.$ids.'END';
+	// echo 'BEGIN'.$ids.'END';
 	// echo hex2bin($ids);
 	// echo json_decode($_POST['ids']);
 
@@ -13,7 +13,7 @@
 	$token = hex2bin($ids['token']);
 
 	if (startsWith($addonPath, $rootPics))
-		echo 'Valid';
+		;// echo 'Valid';
 	else {
 		echo 'ERROR';
 		return ;

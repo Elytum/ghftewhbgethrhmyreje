@@ -139,7 +139,7 @@
 			}
 			else {
 				var context = drawCanvas.getContext('2d');
-				context.drawImage(document.getElementById('videoElement'), 0, 0, 400, 400);
+				context.drawImage(document.getElementById('videoElement'), 0, 0, drawCanvas.width, drawCanvas.height);
 			}
 			var base64 = drawCanvas.toDataURL();
 
@@ -156,7 +156,7 @@
 
 						child.className = "image";
 						child.style.backgroundSize = "100% 100%";
-						child.style.backgroundImage = 'url('+xhr.responseText+')';
+						child.style.backgroundImage = 'url(data:image/png;base64,'+xhr.responseText+')';
 						parent.appendChild(child);
 					}
 				}
